@@ -81,6 +81,28 @@ namespace PetsHeaven.Controllers
             return Ok(productsDTOs);
 
         }
+        [HttpGet("category/{categoryId:int}")]
+        public IActionResult GetByCategory(int  categoryId)
+        {
+            
+            var products=db.Products.Include(d=>d.Category).Where(p=>p.CategoryId==categoryId).ToList();
+            if (products == null) return NotFound();
+            List<ProductDTO> productsDto = products.Select(p => new ProductDTO
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                Description = p.Description,
+                TotalWeight = p.TotalWeight,
+                AnimalType = p.AnimalType,
+                Quantity = p.Quantity,
+                Image = p.Image,
+                CategoryId = p.CategoryId,
+                CategoryName = p.Category.Name
+            }).ToList();
+            return Ok(productsDto);
+
+        }
         
     }
 }

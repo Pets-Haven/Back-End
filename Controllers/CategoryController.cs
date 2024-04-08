@@ -14,23 +14,23 @@ namespace PetsHeaven.Controllers
         PetsHeavenDatabase db;
         public CategoryController(PetsHeavenDatabase context)
         {
-            db = context;            
+            db = context;
         }
         [HttpGet]
-        public IActionResult GetAll() 
+        public IActionResult GetAll()
         {
-            var categories = db.Categories.Include(d=>d.Products).ToList();
-            if(categories == null)
+            var categories = db.Categories.Include(d => d.Products).ToList();
+            if (categories == null)
                 return NotFound();
-            List<CategoryDTO> categoryDTOs = categories.Select(c=> new CategoryDTO { 
+            List<CategoryDTO> categoryDTOs = categories.Select(c => new CategoryDTO {
                 Id = c.Id,
                 Name = c.Name,
-                NumOfProducts = c.Products.Where(p=>p.CategoryId==c.Id).Count()
+                NumOfProducts = c.Products.Where(p => p.CategoryId == c.Id).Count()
             }).ToList();
             return Ok(categoryDTOs);
         }
-        [HttpGet("{id:int}")]
-        public IActionResult GetByCategory(int id) 
+        //[HttpGet("{id:int}")]
+        /*public IActionResult GetByCategory(int id) 
         {
             var category = db.Categories.Include(d=>d.Products).FirstOrDefault(c=>c.Id==id);
             if(category == null) return NotFound();
@@ -49,7 +49,7 @@ namespace PetsHeaven.Controllers
 
             }).ToList();
             return Ok(productDTOs);
-        }
+        }*/
 
     }
 }

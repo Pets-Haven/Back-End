@@ -16,6 +16,13 @@ namespace PetsHeaven
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddCors(corsOptions =>
+            {
+                corsOptions.AddPolicy("MyPolicy", corsOptPolicy =>
+                {
+                    corsOptPolicy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                });
+            });
 
             var app = builder.Build();
 
@@ -30,6 +37,7 @@ namespace PetsHeaven
 
 
             app.MapControllers();
+            app.UseCors("MyPolicy");
 
             app.Run();
         }
