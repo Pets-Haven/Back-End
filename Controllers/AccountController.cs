@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PetsHeaven.DTO;
 using PetsHeaven.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
+
 
 namespace PetsHeaven.Controllers
 {
@@ -123,5 +122,6 @@ namespace PetsHeaven.Controllers
             }
             return Unauthorized();
         }
+
     }
 }
