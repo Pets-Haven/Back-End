@@ -1,12 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using PetsHeaven.Models;
 
 namespace PetsHeaven.Context
 {
-    public class PetsHeavenDatabase:DbContext 
+    public class PetsHeavenDatabase : IdentityDbContext<ApplicationUser>
     {
-        public PetsHeavenDatabase(DbContextOptions options):base(options) { }
+        public PetsHeavenDatabase(DbContextOptions options) : base(options) { }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
