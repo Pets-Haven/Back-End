@@ -37,9 +37,15 @@ namespace PetsHeaven.Controllers
 
                 if (await userManger.FindByEmailAsync(user.Email) is not null)
                 {
-                    ModelState.AddModelError("", "Email already exists");
+                    ModelState.AddModelError("emailError", "Email already exists");
                     return BadRequest(ModelState);
                 }
+                if (await userManger.FindByNameAsync(user.UserName) is not null)
+                {
+                    ModelState.AddModelError("usernameError", "Username already exists");
+                    return BadRequest(ModelState);
+                }
+
 
                 IdentityResult result = await userManger.CreateAsync(user, regUserDTO.Password);
                 if (!result.Succeeded)
@@ -57,7 +63,11 @@ namespace PetsHeaven.Controllers
                 else
                     await userManger.AddToRoleAsync(user, "User");
 
-                return Ok("Account Created Successfully");
+                LoginUserDTO logUserDTO = new LoginUserDTO();
+                logUserDTO.Email = regUserDTO.Email;
+                logUserDTO.Password = regUserDTO.Password;
+                return await Login(logUserDTO);
+                //return Ok("Account Created Successfully");
             }
             return BadRequest(ModelState);
         }
@@ -101,14 +111,8 @@ namespace PetsHeaven.Controllers
                         return Ok(
                         new
                         {
-                            //user = new
-                            //{
-                            //    user.Id,
-                            //    user.UserName,
-                            //    user.Email,
-                            //    user.FirstName,
-                            //    user.LastName
-                            //},
+                            Message = "Logged in successfully",
+                            StatusCode = StatusCodes.Status200OK,
                             token = new JwtSecurityTokenHandler().WriteToken(petsToken),
                             validTo = petsToken.ValidTo
                         });
