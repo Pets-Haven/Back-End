@@ -31,7 +31,7 @@ namespace PetsHeaven.Controllers
                productPrice=c.Product.Price,
                productImage=c.Product.Image,
                productQuantity=c.Product.Quantity,
-               cartQunatity= c.quantity
+                cartQuantity = c.quantity
 
             }).ToList();
             return Ok(cart);
@@ -49,7 +49,7 @@ namespace PetsHeaven.Controllers
             {
                 productId = cart.productId,
                 userId = userId,
-                quantity = cart.cartQunatity
+                quantity = cart.cartQuantity
             };
             db.Cart.Add(newCart);
             db.SaveChanges();
@@ -79,7 +79,7 @@ namespace PetsHeaven.Controllers
             {
                 productId = cart.productId,
                 userId = userId,
-                quantity = cart.cartQunatity
+                quantity = cart.cartQuantity
 
             };
             db.Cart.Update(updatedCart);

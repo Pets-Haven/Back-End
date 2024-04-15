@@ -7,6 +7,6 @@
         public Double productPrice { get; set; }
         public string productImage { get; set; }
         public int productQuantity { get; set; }
-        public int cartQunatity { get; set; }
+        public int cartQuantity { get; set; } 
     }
 }
