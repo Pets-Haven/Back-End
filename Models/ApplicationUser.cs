@@ -15,6 +15,7 @@ namespace PetsHeaven.Models
         [MaxLength(20)]
         [RegularExpression("^[a-zA-Z]{3,20}$")]
         public string LastName { get; set; }
+        public virtual ICollection<Cart>? Cart { get; set; }
 
     }
 }

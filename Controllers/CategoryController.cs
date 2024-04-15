@@ -18,7 +18,6 @@ namespace PetsHeaven.Controllers
             db = context;
         }
         [HttpGet]
-        [Authorize]
         public IActionResult GetAll()
         {
             var categories = db.Categories.Include(d => d.Products).ToList();
