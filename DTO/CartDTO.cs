@@ -2,7 +2,11 @@
 {
     public class CartDTO
     {
-      //  public ICollection<ProductDTO> products { get; set; } لسه مقررتش 
-       public int qunatity { get; set; }
+        public int productId { get; set; }
+        public string productName { get; set; }
+        public Double productPrice { get; set; }
+        public string productImage { get; set; }
+        public int productQuantity { get; set; }
+        public int cartQunatity { get; set; }
     }
 }
