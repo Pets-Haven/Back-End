@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PetsHeaven.Context;
@@ -18,7 +17,9 @@ namespace PetsHeaven
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<PetsHeavenDatabase>(opt => { opt.UseSqlServer(builder.Configuration.GetConnectionString("con")); });
             // Add services to the container.
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<PetsHeavenDatabase>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                            .AddEntityFrameworkStores<PetsHeavenDatabase>()
+                            .AddDefaultTokenProviders();
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -31,9 +32,10 @@ namespace PetsHeaven
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuer = true,
-                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
                     ValidateAudience = true,
+                    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
                     ValidAudience = builder.Configuration["JWT:ValidAudiance"],
+                    RequireExpirationTime = true, // Ensure tokens have an expiration time
                     IssuerSigningKey =
                     new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
                 };

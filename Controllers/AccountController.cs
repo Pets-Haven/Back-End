@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PetsHeaven.DTO;
@@ -15,12 +16,14 @@ namespace PetsHeaven.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManger;
+        private readonly RoleManager<IdentityRole> roleManager;
         private readonly IConfiguration config;
 
-        public AccountController(UserManager<ApplicationUser> userManger, IConfiguration config)
+        public AccountController(UserManager<ApplicationUser> userManger, IConfiguration config, RoleManager<IdentityRole> roleManager)
         {
             this.userManger = userManger;
             this.config = config;
+            this.roleManager = roleManager;
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterUserDTO regUserDTO)
@@ -58,9 +61,18 @@ namespace PetsHeaven.Controllers
 
                 // Add role to the user
                 if (regUserDTO.isAdmin)
-                    await userManger.AddToRoleAsync(user, "Admin");
+                {
+                    //await roleManager.RoleExistsAsync(UserRoles.Admin);
+                    if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
+                        await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+                    await userManger.AddToRoleAsync(user, UserRoles.Admin);
+                }
                 else
-                    await userManger.AddToRoleAsync(user, "User");
+                {
+                    if (!await roleManager.RoleExistsAsync(UserRoles.User))
+                        await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+                    await userManger.AddToRoleAsync(user, UserRoles.User);
+                }
 
                 LoginUserDTO logUserDTO = new LoginUserDTO();
                 logUserDTO.Email = regUserDTO.Email;
@@ -91,7 +103,15 @@ namespace PetsHeaven.Controllers
                         var role = await userManger.GetRolesAsync(user);
                         foreach (var r in role)
                         {
-                            userClaims.Add(new Claim("userRole", r));
+                            userClaims.Add(new Claim(ClaimTypes.Role, r));
+                        }
+                        if (role.Contains(UserRoles.Admin))
+                        {
+                            userClaims.Add(new Claim("userRole", "Admin"));
+                        }
+                        else
+                        {
+                            userClaims.Add(new Claim("userRole", "User"));
                         }
 
                         SecurityKey securityKey =
@@ -107,6 +127,9 @@ namespace PetsHeaven.Controllers
                             expires: DateTime.Now.AddDays(15),
                             signingCredentials: credentials
                         );
+
+                        // Save the token to the AspNetUserTokens table
+                        await userManger.SetAuthenticationTokenAsync(await userManger.FindByEmailAsync(logUserDto.Email), "JWT", "AccessToken", new JwtSecurityTokenHandler().WriteToken(petsToken));
                         return Ok(
                         new
                         {
@@ -121,6 +144,27 @@ namespace PetsHeaven.Controllers
                 return Unauthorized();
             }
             return Unauthorized();
+        }
+
+        [HttpPost("logout/{userId}")]
+        [Authorize] // Requires authentication
+        public async Task<IActionResult> Logout(string userId)
+        {
+            var user = await userManger.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var result = await userManger.RemoveAuthenticationTokenAsync(user, "JWT", "AccessToken");
+            if (result.Succeeded)
+            {
+
+                await userManger.UpdateSecurityStampAsync(user);
+                return Ok("Logged out successfully");
+            }
+
+            return BadRequest("Failed to logout");
         }
 
     }

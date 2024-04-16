@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using PetsHeaven.Context;
 using PetsHeaven.DTO;
+using PetsHeaven.Models;
 
 namespace PetsHeaven.Controllers
 {
