@@ -86,6 +86,12 @@ namespace PetsHeaven.Controllers
             db.SaveChanges();
             return Ok();
             }
+        [HttpGet("{productId:int}")]
+        public IActionResult isItemExist(string userId,int productId) {
+            var item = db.Cart.FirstOrDefault(c => c.productId == productId && c.userId == userId);
+            if (item == null) return NotFound();
+            return Ok(item);
+        }
 
     }
 }
