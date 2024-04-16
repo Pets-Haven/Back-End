@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PetsHeaven.Models
@@ -18,7 +19,7 @@ namespace PetsHeaven.Models
         [Column(Order = 1)]
         [ForeignKey("Product")]
         public int productId { get; set; }
-
+        [DefaultValue(1)]
         public int quantity { get; set; }
 
         public Product Product { get; set; }
