@@ -24,13 +24,13 @@ namespace PetsHeaven.Controllers
             {
                 return NotFound();
             }
-            List<CartDTO> cart = userCart.Select(c=> new CartDTO
+            List<CartDTO> cart = userCart.Select(c => new CartDTO
             {
-               productId = c.productId,
-               productName=c.Product.Name,
-               productPrice=c.Product.Price,
-               productImage=c.Product.Image,
-               productQuantity=c.Product.Quantity,
+                productId = c.productId,
+                productName = c.Product.Name,
+                productPrice = c.Product.Price,
+                productImage = c.Product.Image,
+                productQuantity = c.Product.Quantity,
                 cartQuantity = c.quantity
 
             }).ToList();
@@ -38,7 +38,7 @@ namespace PetsHeaven.Controllers
 
         }
         [HttpPost]
-        public IActionResult addToCart(string userId,CartDTO cart)
+        public IActionResult addToCart(string userId, CartDTO cart)
         {
             if (cart == null)
             {
@@ -56,17 +56,18 @@ namespace PetsHeaven.Controllers
             return Ok();
         }
         [HttpDelete]
-        public IActionResult deleteItem(string userId, int productId) {
-            var cart=db.Cart.Where(c=>c.userId==userId&& c.productId==productId).FirstOrDefault();
-        if(cart == null)
+        public IActionResult deleteItem(string userId, int productId)
+        {
+            var cart = db.Cart.Where(c => c.userId == userId && c.productId == productId).FirstOrDefault();
+            if (cart == null)
             {
                 return NotFound();
             }
-          
-        db.Cart.Remove(cart);
+
+            db.Cart.Remove(cart);
             db.SaveChanges();
             return Ok();
-        
+
         }
         [HttpPut]
         public IActionResult editItem(string userId, CartDTO cart)
@@ -85,9 +86,10 @@ namespace PetsHeaven.Controllers
             db.Cart.Update(updatedCart);
             db.SaveChanges();
             return Ok();
-            }
+        }
         [HttpGet("{productId:int}")]
-        public IActionResult isItemExist(string userId,int productId) {
+        public IActionResult isItemExist(string userId, int productId)
+        {
             var item = db.Cart.FirstOrDefault(c => c.productId == productId && c.userId == userId);
             if (item == null) return NotFound();
             return Ok(item);

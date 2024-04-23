@@ -92,6 +92,68 @@ namespace PetsHeaven.Controllers
             }).ToList();
             return Ok(productDTOs);
         }
-
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult EditProduct(ProductDTO product)
+        {
+            Product productToEdit = db.Products.FirstOrDefault(p => p.Id == product.Id);
+            if (productToEdit == null)
+                return NotFound("Product Not Found");
+            productToEdit.Name = product.Name;
+            productToEdit.Price = product.Price;
+            productToEdit.Description = product.Description;
+            productToEdit.TotalWeight = product.TotalWeight;
+            productToEdit.AnimalType = product.AnimalType;
+            productToEdit.Quantity = product.Quantity;
+            productToEdit.Image = product.Image;
+            productToEdit.CategoryId = product.CategoryId;
+            db.SaveChanges();
+            return Ok(new
+            {
+                product,
+                Message = "Product Updated Successfully"
+            });
+        }
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult DeleteProduct(int id)
+        {
+            Product productToDelete = db.Products.FirstOrDefault(p => p.Id == id);
+            if (productToDelete == null)
+                return NotFound("Product Not Found");
+            db.Products.Remove(productToDelete);
+            db.SaveChanges();
+            return Ok(new
+            {
+                productToDelete,
+                Message = "Product Deleted Successfully"
+            });
+        }
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult AddProduct(ProductDTO product)
+        {
+            Product newProduct = new Product
+            {
+                Name = product.Name,
+                Price = product.Price,
+                Description = product.Description,
+                TotalWeight = product.TotalWeight,
+                AnimalType = product.AnimalType,
+                Quantity = product.Quantity,
+                Image = product.Image,
+                CategoryId = product.CategoryId
+            };
+            db.Products.Add(newProduct);
+            db.SaveChanges();
+            return Created("", new
+            {
+                newProduct,
+                Message = "Product Added Successfully"
+            });
+        }
     }
 }

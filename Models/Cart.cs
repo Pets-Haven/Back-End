@@ -7,9 +7,6 @@ namespace PetsHeaven.Models
     public class Cart
 
     {
-
-
-
         [Key]
         [Column(Order = 0)]
         [ForeignKey("User")]

@@ -159,13 +159,13 @@ namespace PetsHeaven.Controllers
             var result = await userManger.RemoveAuthenticationTokenAsync(user, "JWT", "AccessToken");
             if (result.Succeeded)
             {
-
                 await userManger.UpdateSecurityStampAsync(user);
                 return Ok("Logged out successfully");
             }
 
             return BadRequest("Failed to logout");
         }
+
 
     }
 }

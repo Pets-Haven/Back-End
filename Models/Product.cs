@@ -13,10 +13,10 @@ namespace PetsHeaven.Models
         public int Quantity { get; set; }
         public Double TotalWeight { get; set; }
         public string AnimalType { get; set; }
-        public string Image {  get; set; }
+        public string Image { get; set; }
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
-        public virtual Category Category { get; set; }
+        public virtual Category? Category { get; set; }
         public virtual ICollection<Cart>? Cart { get; set; }
     }
 }
